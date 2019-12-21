@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <title>Document</title>
+
+    <script src="min.js"></script>
+    <script src="todo-list.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+
+
+
+</head>
+
+<body>
+    <h1>aaaaaaaaaaaaaaaaaaaaa</h1>
+
+
+    <div id="todo-table">
+
+           
+        <form method="POST" action="/m/home">
+            <input type="text" name="item" placeholder="things to do ..." />
+            <button type="submit" value="submit">Submit</button>
+        </form>
+        <ul>
+
+            <% if(typeof(docs)!=="undefined"){%>
+            <%     for (var i=0; i<docs.length; i++)  {              %>
+
+            <li><%=docs[i].item%></li>
+
+            <% } %>
+            <% }%>
+
+        </ul>
+
+    </div>
+
+<h2><a href="/u/logout">logout</a> <a href="/m/profile">profile</a> </h2>
+<h2 style="margin-left: 100px;">
+<%= sess   %>
+
+</h2>
+
+
+</body>
+
+</html>
