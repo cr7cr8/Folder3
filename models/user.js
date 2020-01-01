@@ -1,18 +1,16 @@
-const bcrypt = require("bcryptjs")
-const { connDB4 } = require("../db/db")
+const { connDB4 ,wrapAndMerge} = require("../db/db")
 const { userSchema } = require("../db/schema")
 const path = require("path")
+const bcrypt = require("bcryptjs")
 const passport = require("passport")
 const { passportConfig } = require("./passportConfig");
 passportConfig(passport, verifyUserLogic);
 
-
 let count = 0;
 const User = connDB4.model("user_model", userSchema);
 
-
-
 const viewFolderPath = path.join(__dirname, `../views/${path.parse(__filename).name}`)
+
 
 const nameField = Object.keys(userSchema.tree)[0];
 const passwordField = Object.keys(userSchema.tree)[1];
@@ -20,7 +18,7 @@ const passwordField = Object.keys(userSchema.tree)[1];
 
 function verifyUserLogic(req, nameToVerify, passowrdToVerify, done) {
     //  console.log(req.path, User.db.name)
-   // console.log(mongoose.connections[1].db)
+    // console.log(mongoose.connections[1].db)
 
     User.findOne({ [nameField]: nameToVerify }).exec().then(function (u) {
         if (req.path === "/login") {
@@ -67,24 +65,15 @@ function loginUserFunc(req, res, next) {
     passport.authenticate("local", { successRedirect: req.session.toPage, failureRedirect: "/u/login", failureFlash: true })(req, res, next)
 }
 
-
-
-
-
 function registerUserFunc(req, res, next) {
-   passport.authenticate("local", { successRedirect: req.session.toPage, failureRedirect: "/u/register", failureFlash: true })(req, res, next)
+    passport.authenticate("local", { successRedirect: req.session.toPage, failureRedirect: "/u/register", failureFlash: true })(req, res, next)
 }
-
-
-
-
-
 
 function checkAuthenticated(req, res, next) {
 
 
     if (req.isAuthenticated()) {
-
+        //  throw new Error("eeeeee");
         next()
 
     }
@@ -117,23 +106,54 @@ function checkNotAuthenticated(req, res, next) {
     }
 }
 
-function logoutFunc (req,res,next){
-    req.logOut();  res.redirect("/u/login")
+function logoutFunc(req, res, next) {
+    req.logOut(); res.redirect("/u/login")
 }
+
+
+
+
+
+// function wrapAndMerge(...args) {
+
+//     return args.map(function (fn) {
+//         return {
+//             [fn.name]: function (req, res, next) {
+//                 try { fn(req, res, next) }
+//                 catch (ex) { res.send(`<h1>something wrong when calling function  <br /> ${fn.name}<br /></h1> ${ex.stack}`) }
+//             }
+//         }
+
+//     }).reduce(
+//         function (accumulator, currentValue) {
+//             return { ...accumulator, ...currentValue }
+//         })  
+// }
+
 
 
 module.exports = {
-    User: User, loginUserFunc: loginUserFunc, registerUserFunc: registerUserFunc,
-    checkAuthenticated: checkAuthenticated,
-    checkNotAuthenticated: checkNotAuthenticated,
-    logoutFunc:logoutFunc
+
+    ...wrapAndMerge(loginUserFunc, registerUserFunc, checkAuthenticated, checkNotAuthenticated, logoutFunc),
+   // User: User
 }
 
 
 
-//module.exports = [loginUserFunc,registerUserFunc, checkAuthenticated, checkNotAuthenticated, logoutFunc]
-    
-   
-   
-   
+// module.exports = {
+
+
+
+//     User: User, loginUserFunc: wrap(loginUserFunc), registerUserFunc: wrap(registerUserFunc),
+//     checkAuthenticated: wrap(checkAuthenticated),
+//     checkNotAuthenticated: wrap(checkNotAuthenticated),
+//     logoutFunc: wrap(logoutFunc)
+// }
+
+
+
+
+
+
+
 

@@ -2,6 +2,18 @@ const mongoose = require("mongoose");
 const Joi = require("joi");
 
 
+const messageSchema = new mongoose.Schema({
+
+    item: { 
+        type: String, minlength: 1 
+    },
+    author: { 
+        type: String, minlength: 1 
+    }
+
+}, { timestamps: true , collection:"messages"})
+
+
 
 ///////////////////////////////////////////////////////////
 
@@ -13,18 +25,19 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 3,
         maxlength: 50,
-        unique:false
+        unique: false
     },
 
-/*
-    email: {
-        type: String,
-        //required: true,
-        unique: false,
-        minlength: 3,
-        maxlength: 250
-    },
-*/
+
+    /*
+        email: {
+            type: String,
+            //required: true,
+            unique: false,
+            minlength: 3,
+            maxlength: 250
+        },
+    */
     password: {
         type: String,
         required: true,
@@ -34,11 +47,11 @@ const userSchema = new mongoose.Schema({
     }
 
 
-}, { timestamps: true ,collection:"users"})
+}, { timestamps: true, collection: "users" })
 
 userSchema.methods = {
-    showCollectionName:()=>{console.log(this)},
-    showTheCollectionName:function(){console.log(this)}
+    showCollectionName: () => { console.log(this) },
+    showTheCollectionName: function () { console.log(this) }
 
 }
 
@@ -46,7 +59,7 @@ userSchema.methods = {
 userSchema.statics = {
 
     joiValidate: function (obj) {
-       
+
 
         const schema = {
             name: Joi.string().min(5).max(255).required(),
@@ -57,7 +70,7 @@ userSchema.statics = {
         return Joi.validate(obj, schema)
     },
     authValidate: function (obj) {
-       
+
 
         const schema = {
 
@@ -77,4 +90,4 @@ userSchema.statics = {
 
 
 
-module.exports.userSchema = userSchema
+module.exports = {userSchema,messageSchema}

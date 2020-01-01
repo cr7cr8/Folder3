@@ -1,13 +1,20 @@
-const { connDB1 } = require("../db/db")
-const path = require("path")
+const { connDB1,wrapAndMerge } = require("../db/db")
+
 const { messageSchema } = require("../db/schema")
 const Message = connDB1.model("message_model", messageSchema)
-
+const path = require("path")
+const express = require("express")
 
 
 const viewFolderPath = path.join(__dirname, `../views/${path.parse(__filename).name}`)
 
 let count = 0
+
+function staticFile(req,res,next){
+     express.static(viewFolderPath)(req,res,next)
+    
+}
+
 
 function listMessage(req, res) {
 
@@ -53,4 +60,9 @@ function getProfile(req, res) {
 }
 
 
-module.exports = { listMessage, createMessage, deleteMessage, getProfile }
+
+
+
+
+
+module.exports = { ...wrapAndMerge(staticFile,listMessage, createMessage, deleteMessage, getProfile) }

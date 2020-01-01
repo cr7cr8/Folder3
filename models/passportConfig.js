@@ -5,13 +5,12 @@ const { Strategy } = require("passport-local")
 
 
 function passportConfig(passport, verifyUserLogic) {
-    passport.use(new Strategy(
-        { usernameField: "username", passwordField: "password", passReqToCallback: true },
-
-        verifyUserLogic
-        //function verifyUserLogic(req, nameToVerify, passowrdToVerify, done) {
-
-    ))
+    passport.use(
+        new Strategy(
+            { usernameField: "username", passwordField: "password", passReqToCallback: true },
+            verifyUserLogic
+        )
+    )
 
 
     passport.serializeUser(function (token, passIn) {
@@ -28,7 +27,7 @@ function passportConfig(passport, verifyUserLogic) {
 
 
 module.exports = {
-   
+
     passportConfig: passportConfig,
-  
+
 };
