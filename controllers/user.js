@@ -20,6 +20,9 @@ router.post("/register", registerUserFunc)
 
 router.use("/logout",logoutFunc)
 
+
+
+
 //router.delete("/logout",logoutFunc)
 
 

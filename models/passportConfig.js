@@ -9,7 +9,7 @@ function passportConfig(passport, verifyUserLogic) {
         { usernameField: "username", passwordField: "password", passReqToCallback: true },
 
         verifyUserLogic
-
+        //function verifyUserLogic(req, nameToVerify, passowrdToVerify, done) {
 
     ))
 
