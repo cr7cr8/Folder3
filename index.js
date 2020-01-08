@@ -25,7 +25,7 @@ app.use(function (req, res, next) {
     req.url.match(/^(\/[^\/]+){2,}\/$/)
         ? res.redirect(req.url.slice(0, -1))
         : null
-    
+
     req.url.match(/^(\/[^\/]+){2,}$/)
         ? goodUrl()
         : badUrl()
@@ -35,13 +35,14 @@ app.use(function (req, res, next) {
         const [param1, param2] = address[0].split("/").filter(e => e !== "");
         const [paramLast] = address[1].split("/").filter(e => e !== "");
 
+    //  const [[param1, param2], [paramLast]] = [address[0].split("/").filter(e => e !== ""), address[1].split("/").filter(e => e !== "")]
         req.session.toPage =
             (param1.match(/^u\??/) || paramLast.match(/^([\w-]+)\.([\w-]+)$/))
                 ? req.session.toPage || "/m/home"
                 : req.url;
 
-        console.log(req.url, "  ---------  ", req.session.toPage);
-     
+        // console.log(req.url, "  ---------  ", req.session.toPage);
+
         next()
     }
 
@@ -54,15 +55,19 @@ app.use(function (req, res, next) {
 
 })
 
+// process.on("uncaughtException",ex=>{
+//     console.log("====================",ex)
+// })
+
 
 app.use("/u", user)
 app.use("/m", message)
 
 
-app.use(function(req,res){
+app.use(function (req, res) {
 
 
-res.header(404).send("404 <a href='/m/home'>m/home</a>")
+    res.header(404).send(`<h2>${req.url}</h2> <br /> 404 <a href='/m/home'>m/home</a>`)
 
 })
 

@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "bluebird": "^3.7.2",
     "circular-json-es6": "^2.0.2",
     "connect-mongo": "^3.2.0",
     "ejs": "^3.0.1",

@@ -1,5 +1,4 @@
-const { connDB1,wrapAndMerge } = require("../db/db")
-
+const { connDB1, wrapAndMerge } = require("../db/db")
 const { messageSchema } = require("../db/schema")
 const Message = connDB1.model("message_model", messageSchema)
 const path = require("path")
@@ -10,39 +9,48 @@ const viewFolderPath = path.join(__dirname, `../views/${path.parse(__filename).n
 
 let count = 0
 
-function staticFile(req,res,next){
-     express.static(viewFolderPath)(req,res,next)
-    
+function staticFile(req, res, next) {
+
+    express.static(viewFolderPath)(req, res, next)
 }
+
 
 
 function listMessage(req, res) {
 
-    Message.find({ author: req.user.name }).sort("-createdAt").limit(100).exec().then(docs => {
-        res.render(path.join(viewFolderPath, "home.ejs"), { docs: docs, sess: JSON.stringify(req.session) })
-    })
+    return Message.find({ author: req.user.name }).sort("-createdAt").limit(100).exec()
+        .then(docs => {
+          
+            res.render(path.join(viewFolderPath, "home.ejs"), { docs: docs, sess: JSON.stringify(req.session) })
+        })
+  
 
 }
 
 function createMessage(req, res) {
 
-    Message.create({ item: decodeURIComponent(req.body.item), author: req.user.name })
+    return Message.create({ item: decodeURIComponent(req.body.item), author: req.user.name })
         .then(function (doc) {
+
             console.log({ item: decodeURIComponent(req.body.item) }, req.user.name);
             res.json({ item: decodeURIComponent(req.body.item) })
 
-        }).catch(function (err) {
-            throw err;
-        });
+        })
+     
 }
 
 function deleteMessage(req, res) {
 
     //Note: req.params.item is auto decoded, no need to   decordeURIComponent(req.params.item )
-    Message.find({ item: req.params.item, author: req.user.name }).deleteMany(function (err) {
+    // Message.find({ item: req.params.item, author: req.user.name }).deleteMany(function (err) {
+    //     res.send(req.params.item)
+    // })
 
-        res.send(req.params.item)
+    return Message.deleteMessage({ item: req.params.item, author: req.user.name }).then(function (m) {
+
+        res.send(m)
     })
+
 }
 
 function getProfile(req, res) {
@@ -61,8 +69,5 @@ function getProfile(req, res) {
 
 
 
+module.exports = { ...wrapAndMerge(staticFile, listMessage, createMessage, deleteMessage, getProfile) }
 
-
-
-
-module.exports = { ...wrapAndMerge(staticFile,listMessage, createMessage, deleteMessage, getProfile) }

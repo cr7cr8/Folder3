@@ -1,4 +1,4 @@
-const { connDB4 ,wrapAndMerge} = require("../db/db")
+const { connDB4, wrapAndMerge } = require("../db/db")
 const { userSchema } = require("../db/schema")
 const path = require("path")
 const bcrypt = require("bcryptjs")
@@ -20,42 +20,46 @@ function verifyUserLogic(req, nameToVerify, passowrdToVerify, done) {
     //  console.log(req.path, User.db.name)
     // console.log(mongoose.connections[1].db)
 
-    User.findOne({ [nameField]: nameToVerify }).exec().then(function (u) {
-        if (req.path === "/login") {
-            if (!u) {
+    User.findOne({ [nameField]: nameToVerify }).exec()
+        .then(function (u) {
 
-                return done(null, false, { message: "no user with that email" })
+            if (req.path === "/login") {
+                if (!u) {
+
+                    return done(null, false, { message: "no user with that email" })
+                }
+                else {
+
+                    bcrypt.compare(passowrdToVerify, u.password).then(equal => {
+
+                        return equal ? done(null, u) : done(null, false, { message: "password incorrect" })
+                    }).catch(e => {
+                        return done(e)
+                    })
+                }
             }
-            else {
+            else if (req.path === "/register") {
+                if (u) {
+                    return done(null, false, { message: "user already registed" })
+                }
+                else {
 
-                bcrypt.compare(passowrdToVerify, u.password).then(equal => {
+                    User.create({
+                        [nameField]: nameToVerify,
+                        [passwordField]: bcrypt.hashSync(passowrdToVerify)
+                    }).then(u => {
+                        done(null, u);
+                    }).catch(e => {
 
-                    return equal ? done(null, u) : done(null, false, { message: "password incorrect" })
-                }).catch(e => {
-                    return done(e)
-                })
+                        done(e)
+                    })
+
+                }
             }
-        }
-        else if (req.path === "/register") {
-            if (u) {
-                return done(null, false, { message: "user already registed" })
-            }
-            else {
-
-                User.create({
-                    [nameField]: nameToVerify,
-                    [passwordField]: bcrypt.hashSync(passowrdToVerify)
-                }).then(u => {
-                    done(null, u);
-                }).catch(e => {
-
-                    done(e)
-                })
-
-            }
-        }
-    })
-
+        })
+        .catch(function (ex) {
+            return done(null, false, { message: `DataBase error<br />${ex.stack}` })
+        })
 
 };
 
@@ -114,41 +118,15 @@ function logoutFunc(req, res, next) {
 
 
 
-// function wrapAndMerge(...args) {
-
-//     return args.map(function (fn) {
-//         return {
-//             [fn.name]: function (req, res, next) {
-//                 try { fn(req, res, next) }
-//                 catch (ex) { res.send(`<h1>something wrong when calling function  <br /> ${fn.name}<br /></h1> ${ex.stack}`) }
-//             }
-//         }
-
-//     }).reduce(
-//         function (accumulator, currentValue) {
-//             return { ...accumulator, ...currentValue }
-//         })  
-// }
-
 
 
 module.exports = {
 
     ...wrapAndMerge(loginUserFunc, registerUserFunc, checkAuthenticated, checkNotAuthenticated, logoutFunc),
-   // User: User
+    // User: User
 }
 
 
-
-// module.exports = {
-
-
-
-//     User: User, loginUserFunc: wrap(loginUserFunc), registerUserFunc: wrap(registerUserFunc),
-//     checkAuthenticated: wrap(checkAuthenticated),
-//     checkNotAuthenticated: wrap(checkNotAuthenticated),
-//     logoutFunc: wrap(logoutFunc)
-// }
 
 
 

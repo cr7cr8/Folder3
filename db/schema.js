@@ -12,9 +12,31 @@ const messageSchema = new mongoose.Schema({
     }
 
 }, { timestamps: true , collection:"messages"})
+messageSchema.statics = {
+
+    deleteMessage: function(message){
+        const caller = this;
+        return new Promise(function(resolve,reject){
 
 
 
+          caller.deleteMany(message,function(err){
+
+            (err)  ?reject(err)  :resolve(message)
+          
+          
+          });
+        })
+            
+          
+    }
+
+}
+//////
+// Message.find({ item: req.params.item, author: req.user.name }).deleteMany(function (err) {
+
+//     res.send(req.params.item)
+// })
 ///////////////////////////////////////////////////////////
 
 
