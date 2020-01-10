@@ -13,7 +13,10 @@ router.get("/home", checkAuthenticated,listMessage)
 
 router.post("/home", checkAuthenticated,createMessage)
 
-router.delete("/:item",checkAuthenticated,deleteMessage);
+router.delete("/:id",checkAuthenticated,deleteMessage);
+
+
+
 
 //router.use(require("../models/tempFileCreate")(__dirname, __filename))
 

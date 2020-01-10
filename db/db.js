@@ -10,6 +10,7 @@ const { connDB1, connDB4, secret } = {
     get connDB4() { return mongoose.createConnection.bind(mongoose, this.DB4, this.connParam) },
 }
 
+
 function wrapAndMerge(...args) {
 
     return args.map(function (fn) {
@@ -35,7 +36,7 @@ function wrapAndMerge(...args) {
 
 
 module.exports = {
-    connDB1: connDB1(), connDB4: connDB4(), connSession: connDB4(),
+    connDB1: connDB1(), connDB4: connDB4(), connPic:connDB1(), connSession: connDB4(),
     secret, wrapAndMerge
 }
 

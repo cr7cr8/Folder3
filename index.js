@@ -4,10 +4,12 @@ const { mySession } = require("./models/sessionConfig");
 const passport = require("passport")
 const user = require("./controllers/user")
 const message = require("./controllers/message")
-
+const pic = require("./controllers/pic")
 
 
 // require("./models/app")(app,express,mySession,passport,user,message)
+
+
 
 
 app.set("view engine", "ejs")
@@ -19,8 +21,8 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 
-
 app.use(function (req, res, next) {
+
 
     req.url.match(/^(\/[^\/]+){2,}\/$/)
         ? res.redirect(req.url.slice(0, -1))
@@ -62,6 +64,7 @@ app.use(function (req, res, next) {
 
 app.use("/u", user)
 app.use("/m", message)
+app.use("/p",pic)
 
 
 app.use(function (req, res) {

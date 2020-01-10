@@ -111,6 +111,7 @@ function checkNotAuthenticated(req, res, next) {
 }
 
 function logoutFunc(req, res, next) {
+    req.session.destroy();
     req.logOut(); res.redirect("/u/login")
 }
 

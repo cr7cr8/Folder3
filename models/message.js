@@ -1,10 +1,11 @@
-const { connDB1, wrapAndMerge } = require("../db/db")
+const { connDB1, wrapAndMerge, connPic } = require("../db/db")
+const { deletePic } = require("./pic")
 const { messageSchema } = require("../db/schema")
 const Message = connDB1.model("message_model", messageSchema)
 const path = require("path")
 const express = require("express")
 
-
+const mongoose = require("mongoose")
 const viewFolderPath = path.join(__dirname, `../views/${path.parse(__filename).name}`)
 
 let count = 0
@@ -18,39 +19,68 @@ function staticFile(req, res, next) {
 
 function listMessage(req, res) {
 
-    return Message.find({ author: req.user.name }).sort("-createdAt").limit(100).exec()
+    return Message.find({ author: req.user._id }).sort("-createdAt").limit(10).exec()
         .then(docs => {
-          
             res.render(path.join(viewFolderPath, "home.ejs"), { docs: docs, sess: JSON.stringify(req.session) })
-        })
-  
 
+        })
 }
 
 function createMessage(req, res) {
 
-    return Message.create({ item: decodeURIComponent(req.body.item), author: req.user.name })
+    return Message.create({
+        item: decodeURIComponent(req.body.item),
+        author: req.user._id,
+        pic: req.body.pic,
+
+    })
         .then(function (doc) {
 
-            console.log({ item: decodeURIComponent(req.body.item) }, req.user.name);
-            res.json({ item: decodeURIComponent(req.body.item) })
-
+            //console.log({ item: decodeURIComponent(req.body.item) }, req.user.name);
+            // res.json({ item: decodeURIComponent(req.body.item) })
+            res.json(doc)
         })
-     
+
 }
 
 function deleteMessage(req, res) {
 
-    //Note: req.params.item is auto decoded, no need to   decordeURIComponent(req.params.item )
-    // Message.find({ item: req.params.item, author: req.user.name }).deleteMany(function (err) {
-    //     res.send(req.params.item)
-    // })
+  
 
-    return Message.deleteMessage({ item: req.params.item, author: req.user.name }).then(function (m) {
+    Message.findById(req.params.id).exec().then(function (m) {
+        if (m.pic) {
 
-        res.send(m)
+            Message.deleteOne({ _id: req.params.id }, function (err) {
+                (err) ? res.send(err) :   deletePic(req,res)
+            });
+
+          
+        }
+        else {
+            Message.deleteOne({ _id: req.params.id }, function (err) {
+                (err) ? res.send(err) : res.send(req.params.id)
+            });
+        }
+
     })
 
+    // return Message.deleteMessageById(req.params.id).then(function (m) {
+
+    // var gfs = new mongoose.mongo.GridFSBucket(connPic.db, {
+    //     chunkSizeBytes: 255 * 1024,
+    //     bucketName: "pic_uploads"
+    // });
+    // console.log(".....", req.params.id)
+    // gfs.find({ metadata: String(req.params.id) }, { limit: 1 }).forEach(pic => {
+    //     console.log("------", pic)
+    //       gfs.delete(mongoose.Types.ObjectId(pic._id), function (err) {
+    //         console.log("hhhh")
+    //         if (err) { console.log(err) }
+    //     })
+    // })
+
+    //   res.send(m)
+    //})
 }
 
 function getProfile(req, res) {
@@ -66,6 +96,8 @@ function getProfile(req, res) {
         res.send(req.session)
     }
 }
+
+
 
 
 

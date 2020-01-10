@@ -4,32 +4,46 @@ const Joi = require("joi");
 
 const messageSchema = new mongoose.Schema({
 
-    item: { 
-        type: String, minlength: 1 
+    item: {
+        type: String, minlength: 1
     },
-    author: { 
-        type: String, minlength: 1 
-    }
+    author:
+    {
+        type: mongoose.Schema.Types.ObjectId, ref: 'users'
+    },
+    pic:{
+        type:Boolean,
+        default:false
+    },
+      //  [{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }],
 
-}, { timestamps: true , collection:"messages"})
+
+}, { timestamps: true, collection: "messages" })
 messageSchema.statics = {
 
-    deleteMessage: function(message){
-        const caller = this;
-        return new Promise(function(resolve,reject){
+    // deleteMessage: function (message) {
+    //     const caller = this;
+    //     return new Promise(function (resolve, reject) {
+    //         caller.deleteMany(message, function (err) {
+    //             (err) ? reject(err) : resolve(message)
+    //         });
+    //     })
+    // },
+
+    // deleteMessageById:function(id){
+    //     const caller = this;
+    //     return new Promise(function (resolve, reject) {
+
+    //         caller.deleteOne({_id:id},function(err){
+    //             (err) ? reject(err) : resolve(id)
+    //         });
+
+        
+    //     })
+
+    // }
 
 
-
-          caller.deleteMany(message,function(err){
-
-            (err)  ?reject(err)  :resolve(message)
-          
-          
-          });
-        })
-            
-          
-    }
 
 }
 //////
@@ -112,4 +126,4 @@ userSchema.statics = {
 
 
 
-module.exports = {userSchema,messageSchema}
+module.exports = { userSchema, messageSchema }
