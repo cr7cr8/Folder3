@@ -1,9 +1,10 @@
 $(document).ready(function () {
 
 
-  $('form').on('submit', function () {
-    //alert (Boolean($("input[name='file']")[0].files[0]))
-    var item = $('form input');
+  $("button[name='btn']").on('click', function () {
+    
+    alert (Boolean($("input[name='file']")[0].files[0]))
+    var item = $("form input[name='item']");
     var todo = {
       item: encodeURIComponent(item.val()),
       pic: Boolean($("input[name='file']")[0].files[0]),
