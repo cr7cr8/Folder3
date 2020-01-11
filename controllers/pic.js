@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router()
-const { uploadPic, pic_upload, getPic, deletePic } = require("../models/pic")
+const { uploadPic, getPic, deletePic } = require("../models/pic")
 const mongoose = require("mongoose")
 const { connPic } = require("../db/db")
 const { checkAuthenticated } = require("../models/user")

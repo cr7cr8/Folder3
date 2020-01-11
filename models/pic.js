@@ -133,4 +133,4 @@ function deletePic(req, res) {
 }
 
 
-module.exports = { uploadPic, pic_upload, ...wrapAndMerge(getPic, deletePic) }
+module.exports = {  ...wrapAndMerge(getPic, deletePic,uploadPic) }
