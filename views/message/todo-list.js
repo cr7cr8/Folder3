@@ -51,6 +51,7 @@ $(document).ready(function () {
 
       type: 'POST',
       url: '/p/upload',
+      xhrFields: { withCredentials: true },
       data: formData,
       encType: "multipart/form-data",
       processData: false,
@@ -69,15 +70,6 @@ $(document).ready(function () {
 
 
 
-
-
-
-
-
-
-
-
-
   $('li').on('click', function () {
   //  var item = encodeURIComponent($(this).text())//$(this).text().replace(/ /g, " ");
   //  alert ($(this).find("span").text())
@@ -86,6 +78,7 @@ $(document).ready(function () {
       type: 'DELETE',
       url: '/m/' + id,
       success: function (data) {
+       
         //do something with the data via front-end framework
         location.reload();
       }

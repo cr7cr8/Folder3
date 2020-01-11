@@ -1,5 +1,5 @@
-const { connDB4, wrapAndMerge } = require("../db/db")
-const { userSchema } = require("../db/schema")
+const { wrapAndMerge } = require("../db/db")
+const { User } = require("../db/schema")
 const path = require("path")
 const bcrypt = require("bcryptjs")
 const passport = require("passport")
@@ -7,13 +7,13 @@ const { passportConfig } = require("./passportConfig");
 passportConfig(passport, verifyUserLogic);
 
 let count = 0;
-const User = connDB4.model("user_model", userSchema);
+
 
 const viewFolderPath = path.join(__dirname, `../views/${path.parse(__filename).name}`)
 
 
-const nameField = Object.keys(userSchema.tree)[0];
-const passwordField = Object.keys(userSchema.tree)[1];
+const nameField = Object.keys(User.schema.tree)[0];
+const passwordField = Object.keys(User.schema.tree)[1];
 
 
 function verifyUserLogic(req, nameToVerify, passowrdToVerify, done) {
@@ -122,9 +122,7 @@ function logoutFunc(req, res, next) {
 
 
 module.exports = {
-
     ...wrapAndMerge(loginUserFunc, registerUserFunc, checkAuthenticated, checkNotAuthenticated, logoutFunc),
-    // User: User
 }
 
 

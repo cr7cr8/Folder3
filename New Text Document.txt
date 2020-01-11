@@ -1,0 +1,145 @@
+const mongoose = require("mongoose")
+
+const { connDB1, connDB4, secret } = {
+    DB4: "mongodb+srv://boss:ABCabc123@cluster0-iiqnu.azure.mongodb.net/DB4?poolSize=10&retryWrites=true&w=majority",
+    DB1: "mongodb+srv://boss:ABCabc123@cluster0-iiqnu.azure.mongodb.net/DB1?poolSize=10&retryWrites=true&w=majority",
+    secret: "session private key",
+    connParam: { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false },
+
+    get connDB1() { return mongoose.createConnection.bind(mongoose, this.DB1, this.connParam) },
+    get connDB4() { return mongoose.createConnection.bind(mongoose, this.DB4, this.connParam) },
+}
+
+
+function wrapAndMerge(...args) {
+
+    return args.map(function (fn) {
+        return {
+            [fn.name]: function (req, res, next) {
+                try {
+                    const obj = fn(req, res, next);
+                    return (Promise.resolve(obj) === obj)
+                        ? obj.catch(ex => res.send(`<h1>Async error from function <br> ${fn.name}<br> ${ex}</h1>`))
+                        : obj
+                }
+                catch (ex) { res.send(`<h1>something wrong when calling function  <br> ${fn.name}<br></h1> ${ex.stack}`) }
+            }
+        }
+    }).reduce(
+        function (accumulator, currentValue) {
+            return { ...accumulator, ...currentValue }
+        })
+}
+
+
+
+
+
+module.exports = {
+    connDB1: connDB1(), connDB4: connDB4(), connPic:connDB1(), connSession: connDB4(),
+    secret, wrapAndMerge
+}
+
+
+
+
+
+
+
+const { connPic,wrapAndMerge } = require("../db/db")
+const multer = require("multer");
+const GridFsStorage = require("multer-gridfs-storage");
+const mongoose = require("mongoose")
+//const {Message,messageHasPic} = require("./message")
+
+//app.post("/upload", mongoDB_upload.single("file"), function (req, res) {
+const pic_storage = new GridFsStorage({
+
+    db: connPic,
+    client: connPic.client,
+
+    file: (req, file) => {
+
+        console.log("------- mongoDB_storage start-------");
+        return new Promise((resolve, reject) => {
+            const fileInfo = {
+           
+                filename: file.originalname.split("-")[0],
+                bucketName: 'pic_uploads',//match the collection name
+                metadata: file.originalname.split("-")[1],
+                aliases: ["aaa", "bbb", "ccc"],
+            };
+
+
+            resolve(fileInfo);
+
+        })
+        // cannot use then, otherwise file will not be uploaded into pic_file collection, file name will not be correct
+
+    }
+});
+const pic_upload = multer({ storage: pic_storage });
+
+function getPic(req, res) {
+   // console.log(req.params.id)
+
+   // console.log(",,,",req.user._id)
+
+    var gfs = new mongoose.mongo.GridFSBucket(connPic.db, {
+        chunkSizeBytes: 255 * 1024,
+        bucketName: "pic_uploads"
+    });
+    gfs.find({ metadata: String(req.params.id) }, { limit: 1 }).forEach(pic => {
+
+        let gfsrs = gfs.openDownloadStream(pic._id);
+console.log("fetching--------");
+     //   console.log(pic._id)
+        gfsrs.on("data", function (data) {
+          //  console.log(data);
+            res.write(data);
+        })
+        gfsrs.on("close", function () {
+            res.end();
+            console.log(`------fetching ${pic.filename} Done !----`);
+        })
+    })
+}
+
+//deletePic("5e1741371e15491268c1f235")
+function deletePic(req,res){
+
+    console.log("in deletePic ---")
+    var gfs = new mongoose.mongo.GridFSBucket(connPic.db, {
+        chunkSizeBytes: 255 * 1024,
+        bucketName: "pic_uploads"
+    });
+
+  return   gfs.find({ metadata: String(req.params.id) }, { limit: 1 }).forEach(pic => {
+
+        gfs.delete(mongoose.Types.ObjectId(pic._id),function(err){
+
+            if(err){console.log(err)}
+            else{
+                res.send(pic._id)
+            }
+        
+        })
+    })
+}
+
+
+module.exports = { pic_upload,  ...wrapAndMerge(getPic,deletePic) }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

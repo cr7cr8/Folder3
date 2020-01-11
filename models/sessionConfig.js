@@ -1,6 +1,6 @@
 
 const session = require("express-session")
-const { secret, connSession } = require("../db/db")
+const { connDB4_2,secret } = require("../db/db")
 const MongoStore = require("connect-mongo")(session)
 
 
@@ -11,7 +11,7 @@ module.exports = {
         secret: secret,
         resave: false,
         saveUninitialized: false,
-        store: new MongoStore({ mongooseConnection: connSession }),
+        store: new MongoStore({ mongooseConnection: connDB4_2 }),
         cookie: {}
     })
 

@@ -1,11 +1,11 @@
-const { connDB1, wrapAndMerge, connPic } = require("../db/db")
+const {  wrapAndMerge } = require("../db/db")
 const { deletePic } = require("./pic")
-const { messageSchema } = require("../db/schema")
-const Message = connDB1.model("message_model", messageSchema)
+const { Message} = require("../db/schema")
+
 const path = require("path")
 const express = require("express")
 
-const mongoose = require("mongoose")
+
 const viewFolderPath = path.join(__dirname, `../views/${path.parse(__filename).name}`)
 
 let count = 0
@@ -43,45 +43,31 @@ function createMessage(req, res) {
 
 }
 
-function deleteMessage(req, res) {
+function deleteMessage(req, res, next) {
 
-  
 
-    Message.findById(req.params.id).exec().then(function (m) {
+    console.log("mmmmmmmmmmmmmmm")
+    return Message.findById(req.params.id).exec().then(function (m) {
         if (m.pic) {
-
+            console.log("has pic")
             Message.deleteOne({ _id: req.params.id }, function (err) {
-                (err) ? res.send(err) :   deletePic(req,res)
+                (err) ? res.send(err) : deletePic(req, res)
+            //    (err) ? res.send(err) : next(req, res) //cannot work due to promise
+             //   return res.send(req.params.id)
             });
-
-          
         }
         else {
+            console.log("has no pic")
             Message.deleteOne({ _id: req.params.id }, function (err) {
                 (err) ? res.send(err) : res.send(req.params.id)
             });
         }
 
     })
-
-    // return Message.deleteMessageById(req.params.id).then(function (m) {
-
-    // var gfs = new mongoose.mongo.GridFSBucket(connPic.db, {
-    //     chunkSizeBytes: 255 * 1024,
-    //     bucketName: "pic_uploads"
-    // });
-    // console.log(".....", req.params.id)
-    // gfs.find({ metadata: String(req.params.id) }, { limit: 1 }).forEach(pic => {
-    //     console.log("------", pic)
-    //       gfs.delete(mongoose.Types.ObjectId(pic._id), function (err) {
-    //         console.log("hhhh")
-    //         if (err) { console.log(err) }
-    //     })
-    // })
-
-    //   res.send(m)
-    //})
 }
+
+
+
 
 function getProfile(req, res) {
 
@@ -101,5 +87,5 @@ function getProfile(req, res) {
 
 
 
-module.exports = { ...wrapAndMerge(staticFile, listMessage, createMessage, deleteMessage, getProfile) }
+module.exports = { Message, ...wrapAndMerge(staticFile, listMessage, createMessage, getProfile, deleteMessage) }
 
