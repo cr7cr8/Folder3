@@ -2,7 +2,7 @@ $(document).ready(function () {
 
 
   $('form').on('submit', function () {
-    alert (Boolean($("input[name='file']")[0].files[0]))
+    //alert (Boolean($("input[name='file']")[0].files[0]))
     var item = $('form input');
     var todo = {
       item: encodeURIComponent(item.val()),
