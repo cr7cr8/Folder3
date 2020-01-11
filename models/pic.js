@@ -42,7 +42,7 @@ const pic_storage = new GridFsStorage({
                 filename: file.originalname.split("-")[0],
                 bucketName: 'pic_uploads',//match the collection name
 
-                metadata: String(file.originalname.split("-")[1]),
+                metadata: mongoose.Types.ObjectId(file.originalname.split("-")[1]),
 
 
                 // metadata: new Metadata({
@@ -69,32 +69,16 @@ function uploadPic(req, res, next) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function getPic(req, res) {
     // console.log(req.params.id)
 
     // console.log(",,,",req.user._id)
 
-
     var gfs = new mongoose.mongo.GridFSBucket(Metadata.db.db, {
         chunkSizeBytes: 255 * 1024,
         bucketName: "pic_uploads"
     });
-    gfs.find({ metadata: String(req.params.id) }, { limit: 1 }).forEach(pic => {
+    gfs.find({ metadata: mongoose.Types.ObjectId(req.params.id) }, { limit: 1 }).forEach(pic => {
 
         let gfsrs = gfs.openDownloadStream(pic._id);
 
