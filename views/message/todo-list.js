@@ -28,8 +28,8 @@ $(document).ready(function () {
 
         ($("input[name='file']")[0].files[0])
           ? uploadPic(data._id)
-          //  : location.reload()
-          : console.log(data)
+          : location.reload()
+        //  : console.log(data)
       }
 
     });
