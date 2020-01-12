@@ -1,6 +1,5 @@
-const {  wrapAndMerge } = require("../db/db")
-const { deletePic } = require("./pic")
-const { Message} = require("../db/schema")
+const { wrapAndMerge } = require("../db/db")
+const { Message } = require("../db/schema")
 
 const path = require("path")
 const express = require("express")
@@ -46,22 +45,26 @@ function createMessage(req, res) {
 function deleteMessage(req, res, next) {
 
 
-    console.log("mmmmmmmmmmmmmmm")
+
     return Message.findById(req.params.id).exec().then(function (m) {
-        if (m.pic) {
-            console.log("has pic")
-            Message.deleteOne({ _id: req.params.id }, function (err) {
-                (err) ? res.send(err) : deletePic(req, res)
-            //    (err) ? res.send(err) : next(req, res) //cannot work due to promise
-             //   return res.send(req.params.id)
-            });
-        }
-        else {
-            console.log("has no pic")
-            Message.deleteOne({ _id: req.params.id }, function (err) {
-                (err) ? res.send(err) : res.send(req.params.id)
-            });
-        }
+        Message.deleteOne({ _id: req.params.id }, function (err) {
+            (err) ? res.send(err) : res.send(req.params.id)
+        })
+        // if (m.pic) {
+        //     console.log("has pic")
+        //     Message.deleteOne({ _id: req.params.id }, function (err) {
+        //    //     (err) ? res.send(err) : deletePic(req, res)
+        //         (err) ? res.send(err) : res.send(req.params.id)
+        //         //    (err) ? res.send(err) : next(req, res) //cannot work due to promise
+        //      //   return res.send(req.params.id)
+        //     });
+        // }
+        // else {
+        //     console.log("has no pic")
+        //     Message.deleteOne({ _id: req.params.id }, function (err) {
+        //         (err) ? res.send(err) : res.send(req.params.id)
+        //     });
+        // }
 
     })
 }
@@ -87,5 +90,5 @@ function getProfile(req, res) {
 
 
 
-module.exports = { Message, ...wrapAndMerge(staticFile, listMessage, createMessage, getProfile, deleteMessage) }
+module.exports = { ...wrapAndMerge(staticFile, createMessage,listMessage, getProfile, deleteMessage),  }
 

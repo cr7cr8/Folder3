@@ -24,7 +24,6 @@ console.log(Metadata.db === mongoose.connections[2])
 //console.log(mongoose.connections[1])
 
 
-
 const pic_storage = new GridFsStorage({
 
     db: Metadata.db,
@@ -33,27 +32,40 @@ const pic_storage = new GridFsStorage({
     file: (req, file) => {
 
         console.log("------- mongoDB_storage start-------");
-       // console.log(req.user)
+
+        // console.log(req.user)
         return new Promise((resolve, reject) => {
+            if (file.originalname.split("-")[1] === "undefined") {
+                const fileInfo = {
+                    filename: file.originalname.split("-")[0],
+                    bucketName: 'bad_uploads',//match the collection name
 
+                    metadata: req.user,
 
-            const fileInfo = {
+                    // metadata: new Metadata({
+                    //     owner: mongoose.Types.ObjectId(req.user._id),
+                    //     message: mongoose.Types.ObjectId(file.originalname.split("-")[1]),
+                    // }),
+                    aliases: ["aaa", "bbb", "ccc"],
+                };
+                resolve(fileInfo);
+            }
+            else {
+                const fileInfo = {
+                    filename: file.originalname.split("-")[0],
+                    bucketName: 'pic_uploads',//match the collection name
 
-                filename: file.originalname.split("-")[0],
-                bucketName: 'pic_uploads',//match the collection name
+                    metadata: mongoose.Types.ObjectId(file.originalname.split("-")[1]),
 
-                metadata: mongoose.Types.ObjectId(file.originalname.split("-")[1]),
-
-
-                // metadata: new Metadata({
-                //     owner: mongoose.Types.ObjectId(req.user._id),
-                //     message: mongoose.Types.ObjectId(file.originalname.split("-")[1]),
-                // }),
-                aliases: ["aaa", "bbb", "ccc"],
-            };
-
-
-            resolve(fileInfo);
+                    // metadata: new Metadata({
+                    //     owner: mongoose.Types.ObjectId(req.user._id),
+                    //     message: mongoose.Types.ObjectId(file.originalname.split("-")[1]),
+                    // }),
+                    aliases: ["aaa", "bbb", "ccc"],
+                };
+  resolve(fileInfo);
+            }
+          
 
         })
         // cannot use then, otherwise file will not be uploaded into pic_file collection, file name will not be correct
@@ -63,10 +75,17 @@ const pic_storage = new GridFsStorage({
 const pic_upload = multer({ storage: pic_storage });
 
 function uploadPic(req, res, next) {
-     pic_upload.fields([{ name: 'file', maxCount: 1 }, { name: 'mmm', maxCount: 1 }])(req,res,next)  
- //     res.send("uploaded")
- //   next()
+    pic_upload.fields([{ name: 'file', maxCount: 1 }, { name: 'mmm', maxCount: 1 }])(req, res, next)
+    //return 
+    //   res.send(req.body)
+    //   next()
 }
+
+function uploadPic2(req, res, next) {
+    console.log(req.body)
+    res.send(req.body)
+}
+
 
 
 function getPic(req, res) {
@@ -98,13 +117,14 @@ function getPic(req, res) {
 function deletePic(req, res) {
 
     console.log("in deletePic ---")
-    var gfs = new mongoose.mongo.GridFSBucket(connPic.db, {
+    var gfs = new mongoose.mongo.GridFSBucket(Metadata.db.db, {
         chunkSizeBytes: 255 * 1024,
         bucketName: "pic_uploads"
     });
 
-    return gfs.find({ metadata: String(req.params.id) }, { limit: 1 }).forEach(pic => {
+    return gfs.find({ metadata: mongoose.Types.ObjectId(req.params.id) }, { limit: 1 }).forEach(pic => {
 
+        if (!pic) { res.send("pic not in database") }
         gfs.delete(mongoose.Types.ObjectId(pic._id), function (err) {
 
             if (err) { console.log(err) }
@@ -117,4 +137,4 @@ function deletePic(req, res) {
 }
 
 
-module.exports = {  ...wrapAndMerge(getPic, deletePic,uploadPic) }
+module.exports = { ...wrapAndMerge(getPic, deletePic, uploadPic, uploadPic2) }
