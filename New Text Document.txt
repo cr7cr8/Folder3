@@ -9,7 +9,7 @@ const { connDB1, connDB4, secret } = {
     get connDB1() { return mongoose.createConnection.bind(mongoose, this.DB1, this.connParam) },
     get connDB4() { return mongoose.createConnection.bind(mongoose, this.DB4, this.connParam) },
 }
-
+ 
 
 function wrapAndMerge(...args) {
 
