@@ -29,15 +29,18 @@ $('ul li img').on('click',function(e){e.stopPropagation();})
             $("ul").prepend(`${data}`);
             $('li:first').on('click', deleteMessage)
             uploadPic($('li:first span:first').text())
-
+            return false;
           })()
           : (function () {
             $("ul").prepend(`${data}`);
             $('li:first').on('click', deleteMessage)
+            return false;
           //  uploadPic($('li:first span:first').text())
           //  uploadPic(data)
           })()
-      }
+      
+      
+        }
 
     });
 
@@ -78,7 +81,7 @@ $('ul li img').on('click',function(e){e.stopPropagation();})
      //   $('li:first').on('click', deleteMessage)
         $('li:first').append(`${data}`)
         $('ul li:first img').on('click',function(e){e.stopPropagation();})
-
+        return false;
         // location.reload()
       }
     });
@@ -110,6 +113,7 @@ $('ul li img').on('click',function(e){e.stopPropagation();})
           : $(e.target).remove()
         // : location.reload()
         //:console.log("iii")
+        return false;
       }
     })
     return false;
@@ -127,6 +131,7 @@ $('ul li img').on('click',function(e){e.stopPropagation();})
        // location.reload()
         //do something with the data via front-end framework
         //location.reload();
+        return false;
       }
     });
     return false;
@@ -136,7 +141,7 @@ $('ul li img').on('click',function(e){e.stopPropagation();})
 
 
 
-
+  return false;
 
 
 })
