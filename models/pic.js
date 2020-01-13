@@ -83,7 +83,10 @@ function uploadPic(req, res, next) {
 
 function uploadPic2(req, res, next) {
     console.log(req.body)
-    res.send(req.body)
+    res.send(`<br><img src=/p/get/${req.body.mmm}>`)
+
+  
+
 }
 
 

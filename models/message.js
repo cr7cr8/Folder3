@@ -37,7 +37,8 @@ function createMessage(req, res) {
 
             //console.log({ item: decodeURIComponent(req.body.item) }, req.user.name);
             // res.json({ item: decodeURIComponent(req.body.item) })
-            res.json(doc)
+         return   res.render(path.join(viewFolderPath, "blank.ejs"), { doc: doc })
+//return res.send(doc._id)
         })
 
 }
