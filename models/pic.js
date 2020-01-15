@@ -35,9 +35,9 @@ const pic_storage = new GridFsStorage({
 
         // console.log(req.user)
         return new Promise((resolve, reject) => {
-            if (file.originalname.split("-")[1] === "undefined") {
+            if (file.originalname.split("!")[1] === "undefined") {
                 const fileInfo = {
-                    filename: file.originalname.split("-")[0],
+                    filename: file.originalname.split("!")[0],
                     bucketName: 'bad_uploads',//match the collection name
 
                     metadata: req.user,
@@ -52,10 +52,10 @@ const pic_storage = new GridFsStorage({
             }
             else {
                 const fileInfo = {
-                    filename: file.originalname.split("-")[0],
+                    filename: file.originalname.split("!")[0],
                     bucketName: 'pic_uploads',//match the collection name
 
-                    metadata: mongoose.Types.ObjectId(file.originalname.split("-")[1]),
+                    metadata: mongoose.Types.ObjectId(file.originalname.split("!")[1]),
 
                     // metadata: new Metadata({
                     //     owner: mongoose.Types.ObjectId(req.user._id),
@@ -84,8 +84,6 @@ function uploadPic(req, res, next) {
 function uploadPic2(req, res, next) {
     console.log(req.body)
     res.send(`<br><img src=/p/get/${req.body.mmm}>`)
-
-  
 
 }
 

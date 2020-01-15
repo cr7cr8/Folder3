@@ -1,9 +1,8 @@
 $(document).ready(function () {
 
 
-$('ul li img').on('click',function(e){e.stopPropagation();})
-
-  //$('form').on('submit', function () {
+  $('ul li img').on('click', function (e) { e.stopPropagation(); })
+  //$('form').on('submit',uploadMessage )
   $("button[name='btn']").on('click', uploadMessage);
 
   function uploadMessage() {
@@ -11,9 +10,8 @@ $('ul li img').on('click',function(e){e.stopPropagation();})
     var item = $("form input[name='item']");
     var todo = {
       item: encodeURIComponent(item.val()) || [...String(new Date())].splice(16, 8).join("") + ' ' + [...String(new Date())].splice(0, 15).join(""),
-      //item: encodeURIComponent(item.val()), 
       pic: Boolean($("input[name='file']")[0].files[0]),
-    //  pic: false
+     
     }//item.val().trim()};
 
     $.ajax({
@@ -23,7 +21,6 @@ $('ul li img').on('click',function(e){e.stopPropagation();})
       xhrFields: { withCredentials: true },
       success: function (data) {
         //   location.reload()
-
         ($("input[name='file']")[0].files[0])
           ? (function () {
             $("ul").prepend(`${data}`);
@@ -35,12 +32,10 @@ $('ul li img').on('click',function(e){e.stopPropagation();})
             $("ul").prepend(`${data}`);
             $('li:first').on('click', deleteMessage)
             return false;
-          //  uploadPic($('li:first span:first').text())
-          //  uploadPic(data)
+            //  uploadPic($('li:first span:first').text())
+            //  uploadPic(data)
           })()
-      
-      
-        }
+      }
 
     });
 
@@ -52,18 +47,12 @@ $('ul li img').on('click',function(e){e.stopPropagation();})
 
   function uploadPic(id) {
 
-   // alert(id)
-   // return false
     var inputFile = $("input[name='file']")[0].files[0];
     var formData = new FormData();
-    formData.append('file', inputFile, inputFile.name + "-" + id);
+    formData.append('file', inputFile, inputFile.name + "!" + id);
 
     formData.append('caption', $('#caption').val());
     formData.append('mmm', id);
-
-    // console.log(inputFile.name + "-" + id);
-    // $('li:first').append("aaaaaaaaaaaaaaa")
-    // alert(inputFile.name);
     $.ajax({
       type: 'POST',
       url: '/p/upload',
@@ -75,12 +64,8 @@ $('ul li img').on('click',function(e){e.stopPropagation();})
       success: function (data) {
 
         console.log(`img ${data}`)
-        
-        
-     //   $("ul").prepend(`${data}`);
-     //   $('li:first').on('click', deleteMessage)
         $('li:first').append(`${data}`)
-        $('ul li:first img').on('click',function(e){e.stopPropagation();})
+        $('ul li:first img').on('click', function (e) { e.stopPropagation(); })
         return false;
         // location.reload()
       }
@@ -91,13 +76,10 @@ $('ul li img').on('click',function(e){e.stopPropagation();})
 
   $('li').on('click', deleteMessage);
 
- 
+
   function deleteMessage(e) {
-    //  var item = encodeURIComponent($(this).text())//$(this).text().replace(/ /g, " ");
-    //  alert ($(this).find("span").text())
-    // alert("aaa")
-    //alert(Boolean($(e.target).find("span")))
-    
+
+
     const id = $(this).find("span").text().trim()
     console.log($(e.target))
     const img = $(`img[src="/p/get/${id}"]`)
@@ -109,10 +91,9 @@ $('ul li img').on('click',function(e){e.stopPropagation();})
       success: function (data) {
 
         (img.length)
-          ? (function(){$(e.target).remove();deletePic(id)})()
+          ? (function () { $(e.target).remove(); deletePic(id) })()
           : $(e.target).remove()
         // : location.reload()
-        //:console.log("iii")
         return false;
       }
     })
@@ -128,9 +109,8 @@ $('ul li img').on('click',function(e){e.stopPropagation();})
 
       success: function (data) {
         console.log(`img ${data} deleted`)
-       // location.reload()
+        // location.reload()
         //do something with the data via front-end framework
-        //location.reload();
         return false;
       }
     });
