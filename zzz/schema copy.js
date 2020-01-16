@@ -43,9 +43,34 @@ userSchema.statics = {}
 const User = connDB4.model("users", userSchema);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+// const picSchema = new mongoose.Schema({
 
+//     linkage: {
+//         type: mongoose.Schema.Types.ObjectId, //ref: 'messages' 
+//     },
+//     message: {
+//         type: mongoose.Schema.Types.ObjectId, //ref: 'messages' 
+//     },
+//     owner: {
+//         type: mongoose.Schema.Types.ObjectId,// ref: 'users'
+//     }
 
+// }, { timestamps: true, collection: "pic_uploads" })
 
+// picSchema.methods = {
+//     upload: function (req, res, next) {
+//         return multerUpload(this).fields([{ name: "metadata", maxCount: 1 }, { name: 'file', maxCount: 1 }, { name: 'mmm', maxCount: 1 }])(req, res, next)
+//     },
+// }
+
+// picSchema.statics = {
+//     download: function (req, res) {
+
+//         return multerDownload.call(this, req, res)
+//     }
+// }
+
+//const Pic = connDB1_2.model("pic_uploads", picSchema);
 const Pic = createFileModel({connDB:connDB1_2,collectionName:"pic_uploads"})
 
 
@@ -71,6 +96,8 @@ function createFileModel({ connDB, collectionName }) {
         delete:function(req,res){
             return multerDelete.call(this, req, res)
         }
+    
+    
     };
 
     return connDB.model(collectionName, fileSchema)

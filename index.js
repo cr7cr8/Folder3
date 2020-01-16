@@ -5,7 +5,11 @@ const passport = require("passport")
 const user = require("./controllers/user")
 const message = require("./controllers/message")
 const pic = require("./controllers/pic")
+//const profile = require("./controllers/profile")
 
+const flash = require("express-flash")
+
+//app.use(flash())
 
 // require("./models/app")(app,express,mySession,passport,user,message)
 
@@ -19,7 +23,7 @@ app.use(express.json())
 app.use(mySession)
 app.use(passport.initialize())
 app.use(passport.session())
-
+app.use(flash())
 
 app.use(function (req, res, next) {
 
@@ -65,6 +69,7 @@ app.use(function (req, res, next) {
 app.use("/u", user)
 app.use("/m", message)
 app.use("/p",pic)
+//app.use("/profile",profile)
 
 
 app.use(function (req, res) {

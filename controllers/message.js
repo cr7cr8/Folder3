@@ -3,9 +3,9 @@ const router = express.Router()
 const { checkAuthenticated } = require("../models/user")
 const {staticFile,listMessage,createMessage,deleteMessage,getProfile} = require("../models/message")
 const {deletePic} = require("../models/pic")
-const flash = require("express-flash")
+//const flash = require("express-flash")
 
-router.use(flash())
+//router.use(flash())
 router.use(staticFile)
 
 router.get("/profile", checkAuthenticated,getProfile)

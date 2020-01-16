@@ -11,7 +11,7 @@ $(document).ready(function () {
     var todo = {
       item: encodeURIComponent(item.val()) || [...String(new Date())].splice(16, 8).join("") + ' ' + [...String(new Date())].splice(0, 15).join(""),
       pic: Boolean($("input[name='file']")[0].files[0]),
-     
+
     }//item.val().trim()};
 
     $.ajax({
@@ -49,15 +49,18 @@ $(document).ready(function () {
 
     var inputFile = $("input[name='file']")[0].files[0];
     var formData = new FormData();
-    formData.append('file', inputFile, inputFile.name + "!" + id);
+    //formData.append('file', inputFile, inputFile.name + "!" + id);
+    formData.append('file', inputFile, inputFile.name);
 
-    formData.append('caption', $('#caption').val());
-    formData.append('mmm', id);
+    //formData.append('metadata', "aaaaaaaaa");
+    //formData.append('caption', $('#caption').val());
+    //formData.append('mmm', id);
     $.ajax({
       type: 'POST',
-      url: '/p/upload',
+      url: `/p/upload/${id}`,
       xhrFields: { withCredentials: true },
       data: formData,
+      metadata: "ooooo",
       encType: "multipart/form-data",
       processData: false,
       contentType: false,

@@ -2,15 +2,18 @@ body{
     background: #0d1521;
     font-family: tahoma;
     color: #989898;
+
 }
 
 #todo-table{
     position: relative;
     width: 95%;
-    background: #090d13;
+    background: #090d13; 
     margin: 0 auto;
     padding: 20px;
     box-sizing: border-box;
+    opacity: 0.8;
+    /* background-image: url(http://192.168.0.100/profile/getimg); */
 }
 
 #todo-table form:after{

@@ -1,0 +1,29 @@
+<p><%= Username %>
+  Port <%= Port %> Number visits <%= count %>
+
+  <%=  new Date().toLocaleString("cn-CN", { timeZone: 'Asia/Shanghai' })%>
+  IP: <%=Obj.ip %>
+
+
+  <h2>req.session</h2>
+  <%= JSON.stringify(Session,null, 4) %>
+
+  <h2>req.user</h2>
+  <%= JSON.stringify(Obj,null, 4) %></p>
+
+<h2><a href="/u/logout">logout</a> <a href="/m/home">home</a> </h2>
+
+<!-- <form action="/u/logout?_method=DELETE" method="POST">
+  <button type="submit">Log Out</button>
+</form> -->
+
+
+
+<form method="POST" action="/profile/post"   encType="multipart/form-data",>
+  <!-- <input type="text" name="item" placeholder="things to do ..." /> -->
+  <input type="file" name="file" id="file" class="custom-file-input" />
+  <button type="submit" value="submit">Submit</button>
+
+  <!-- <button name="btn">Submit</button> -->
+
+</form>

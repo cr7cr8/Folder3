@@ -4,6 +4,7 @@ const path = require("path")
 const bcrypt = require("bcryptjs")
 const passport = require("passport")
 const { passportConfig } = require("./passportConfig");
+
 passportConfig(passport, verifyUserLogic);
 
 let count = 0;
