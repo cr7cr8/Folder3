@@ -13,7 +13,8 @@ const flash = require("express-flash")
 
 // require("./models/app")(app,express,mySession,passport,user,message)
 
-
+    const cors = require("cors")
+    app.use(cors())
 
 
 app.set("view engine", "ejs")
